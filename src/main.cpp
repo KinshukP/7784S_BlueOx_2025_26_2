@@ -18,7 +18,7 @@ pros::Imu imu(6);  // 🔧 CHANGE if your IMU is on different port
 pros::Rotation parallel_encoder(9);  // 🔧 CHANGE to your rotation sensor port
 
 // ---- Tracking Wheel Specs ----
-constexpr float tracking_wheel_diameter = 3.25;  // 🔧 SET your tracking wheel diameter (inches)
+constexpr float tracking_wheel_diameter = lemlib::Omniwheel::NEW_2;  // 🔧 SET your tracking wheel diameter (inches)
 constexpr float tracking_wheel_offset = 3.0;     // 🔧 Distance from center of rotation (inches)
 
 // ---- Drivetrain Specs ----
@@ -76,21 +76,27 @@ lemlib::OdomSensors sensors(
 
 // Controller settings (tune later)
 lemlib::ControllerSettings linear_controller(
-    10,   // kP
+    3,   // kP
     0,    // kI
-    3,    // kD
+    4,    // kD
     3,    // anti windup
     1,    // small error range
     100,  // small error timeout
     3,    // large error range
     500,  // large error timeout
-    20    // max accel
+    1.5    // max accel
 );
-
 lemlib::ControllerSettings angular_controller(
-    2, 0, 10, 3, 1, 100, 3, 500, 0
+    1.5,  // kP from Python turn PID
+    0,    // kI
+    0,    // kD
+    3,
+    1,
+    100,
+    3,
+    500,
+    0
 );
-
 lemlib::Chassis chassis(
     drivetrain,
     linear_controller,
@@ -125,9 +131,12 @@ void initialize() {
 void autonomous() {
     chassis.setPose(0, 0, 0);
 
-    chassis.moveToPoint(24, 0, 2000);  // Move forward 24 inches
-    chassis.turnToHeading(90, 2000);   // Turn to 90 degrees
-    chassis.moveToPoint(24, 24, 2000);
+    chassis.moveToPoint(0, 24, 2000);  // Move forward 24 inches
+	chassis.waitUntilDone();
+    chassis.turnToHeading(-90, 2000);   // Turn to 90 degrees
+	chassis.waitUntilDone();
+    // chassis.moveToPoint(24, 24, 2000);
+	// chassis.waitUntilDone();
 }
 
 /*
