@@ -18,12 +18,12 @@ pros::Imu imu(6);  // 🔧 CHANGE if your IMU is on different port
 pros::Rotation parallel_encoder(9);  // 🔧 CHANGE to your rotation sensor port
 
 // ---- Tracking Wheel Specs ----
-constexpr float tracking_wheel_diameter = 0.52;  // 🔧 SET your tracking wheel diameter (inches)
+constexpr float tracking_wheel_diameter = 2.125;  // 🔧 SET your tracking wheel diameter (inches)
 constexpr float tracking_wheel_offset = 3.0;     // 🔧 Distance from center of rotation (inches)
 
 // ---- Drivetrain Specs ----
 constexpr float track_width = 10.5;   // 🔧 Measure left-to-right center distance
-constexpr int drivetrain_rpm = 600;   // 🔧 Set based on cartridge
+constexpr int drivetrain_rpm = 450;   // 🔧 Set based on cartridge
 constexpr float horizontal_drift = 2; // 🔧 Leave 2 for tank unless tuned
 
 /*
@@ -139,7 +139,10 @@ void autonomous() {
     pros::delay(1000);
 
     // 🔹 MOVE
-    chassis.moveToPoint(0, -24, 2000);
+    chassis.moveToPoint(24, 24, 2000);
+    chassis.waitUntilDone();
+    pros::delay(3000);
+    chassis.turnToHeading(-90, 2000);
     chassis.waitUntilDone();
 
     // 🔹 AFTER MOVE
@@ -149,9 +152,9 @@ void autonomous() {
 
     pros::delay(3000);
 
-    // TURN
-    chassis.turnToHeading(-90, 2000);
-    chassis.waitUntilDone();
+    // // TURN
+    // chassis.turnToHeading(-90, 2000);
+    // chassis.waitUntilDone();
 }
 
 /*
