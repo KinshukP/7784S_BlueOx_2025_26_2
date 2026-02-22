@@ -18,12 +18,12 @@ pros::Imu imu(6);  // 🔧 CHANGE if your IMU is on different port
 pros::Rotation parallel_encoder(9);  // 🔧 CHANGE to your rotation sensor port
 
 // ---- Tracking Wheel Specs ----
-constexpr float tracking_wheel_diameter = lemlib::Omniwheel::NEW_2;  // 🔧 SET your tracking wheel diameter (inches)
+constexpr float tracking_wheel_diameter = 0.52;  // 🔧 SET your tracking wheel diameter (inches)
 constexpr float tracking_wheel_offset = 3.0;     // 🔧 Distance from center of rotation (inches)
 
 // ---- Drivetrain Specs ----
 constexpr float track_width = 10.5;   // 🔧 Measure left-to-right center distance
-constexpr int drivetrain_rpm = 450;   // 🔧 Set based on cartridge
+constexpr int drivetrain_rpm = 600;   // 🔧 Set based on cartridge
 constexpr float horizontal_drift = 2; // 🔧 Leave 2 for tank unless tuned
 
 /*
@@ -131,12 +131,27 @@ void initialize() {
 void autonomous() {
     chassis.setPose(0, 0, 0);
 
-    chassis.moveToPoint(0, 24, 2000);  // Move forward 24 inches
-	chassis.waitUntilDone();
-    chassis.turnToHeading(-90, 2000);   // Turn to 90 degrees
-	chassis.waitUntilDone();
-    // chassis.moveToPoint(24, 24, 2000);
-	// chassis.waitUntilDone();
+    // 🔹 BEFORE MOVE
+    pros::lcd::set_text(1, "Before move");
+    pros::lcd::set_text(2, "wheel: " + std::to_string(parallel_wheel.getDistanceTraveled()));
+    pros::lcd::set_text(3, "y: " + std::to_string(chassis.getPose().y));
+
+    pros::delay(1000);
+
+    // 🔹 MOVE
+    chassis.moveToPoint(0, -24, 2000);
+    chassis.waitUntilDone();
+
+    // 🔹 AFTER MOVE
+    pros::lcd::set_text(4, "After move");
+    pros::lcd::set_text(5, "wheel: " + std::to_string(parallel_wheel.getDistanceTraveled()));
+    pros::lcd::set_text(6, "y: " + std::to_string(chassis.getPose().y));
+
+    pros::delay(3000);
+
+    // TURN
+    chassis.turnToHeading(-90, 2000);
+    chassis.waitUntilDone();
 }
 
 /*
